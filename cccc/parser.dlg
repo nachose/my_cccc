@@ -1,0 +1,888 @@
+<<
+/* parser.dlg -- DLG Description of scanner
+ *
+ * Generated from: java.g
+ *
+ * Terence Parr, Will Cohen, and Hank Dietz: 1989-1999
+ * Purdue University Electrical Engineering
+ * With AHPCRC, University of Minnesota
+ * ANTLR Version 1.33MR20
+ */
+
+#define ANTLR_VERSION	13320
+#include "Jtokens.h"
+#include "AToken.h"
+
+#define zzTRACE_RULES
+#include "AParser.h"
+#include "cccc.h"
+#include "cccc_utl.h"
+#include "cccc_opt.h"
+
+  // the objects which PCCTS creates for ASTs as the #0 variable etc
+// have type "pointer to ASTBase", which means they need to be cast
+// to a pointer to my variant of AST if I want to call my AST 
+// methods on them
+#define MY_AST(X) ( (AST*) X)
+>>
+
+<<%%lexaction
+
+#include <cassert>
+
+// Need to see definition of JLexer class before defining the 
+// next actions.
+// This will mean this file is included twice in JLexer.cpp.  This
+// should do no harm...
+#include "JLexer.h"
+
+// The lexical analyser passes some information through to
+// the parse store to be integrated with parse information before
+
+inline void IncrementCount(LexicalCount tc) 
+{
+	assert(ParseStore::currentInstance()!=NULL);
+	ParseStore::currentInstance()->IncrementCount(tc);
+}
+
+inline void endOfLine(JLexer &lexer)
+{
+	assert(ParseStore::currentInstance()!=NULL);
+	ParseStore::currentInstance()->endOfLine(lexer.line());
+	lexer.newline();
+	lexer.skip();
+}
+
+inline void endOfCommentLine(JLexer &lexer)
+{
+	IncrementCount(tcCOMLINES); 
+	endOfLine(lexer);
+}
+
+  
+>>
+
+<<%%parserclass JParser>>
+
+
+%%START
+
+@
+	<<
+		replstr("<EOF>");   
+		return Eof;
+	>>
+
+?
+	<<
+		IncrementCount(tcMCCABES_VG);  
+		return QUESTION;
+	>>
+
+\(
+	<<
+		;  
+		return LPAREN;
+	>>
+
+\)
+	<<
+		;  
+		return RPAREN;
+	>>
+
+\[
+	<<
+		;  
+		return LBRACK;
+	>>
+
+\]
+	<<
+		;  
+		return RBRACK;
+	>>
+
+\{
+	<<
+		;  
+		return LCURLY;
+	>>
+
+\}
+	<<
+		;  
+		return RCURLY;
+	>>
+
+:
+	<<
+		;  
+		return COLON;
+	>>
+
+,
+	<<
+		;  
+		return COMMA;
+	>>
+
+\.
+	<<
+		;  
+		return DOT;
+	>>
+
+=
+	<<
+		;  
+		return ASSIGN;
+	>>
+
+==
+	<<
+		;  
+		return EQUAL;
+	>>
+
+!
+	<<
+		;  
+		return LNOT;
+	>>
+
+\~
+	<<
+		;  
+		return BNOT;
+	>>
+
+!=
+	<<
+		;  
+		return NOT_EQUAL;
+	>>
+
+/
+	<<
+		;  
+		return DIV;
+	>>
+
+/=
+	<<
+		;  
+		return DIV_ASSIGN;
+	>>
+
+\+
+	<<
+		;  
+		return PLUS;
+	>>
+
+\+=
+	<<
+		;  
+		return PLUS_ASSIGN;
+	>>
+
+\+\+
+	<<
+		;  
+		return INC;
+	>>
+
+\-
+	<<
+		;  
+		return MINUS;
+	>>
+
+\-=
+	<<
+		;  
+		return MINUS_ASSIGN;
+	>>
+
+\-\-
+	<<
+		;  
+		return DEC;
+	>>
+
+\*
+	<<
+		;  
+		return STAR;
+	>>
+
+\*=
+	<<
+		;  
+		return STAR_ASSIGN;
+	>>
+
+%
+	<<
+		;  
+		return MOD;
+	>>
+
+%=
+	<<
+		;  
+		return MOD_ASSIGN;
+	>>
+
+\>\>
+	<<
+		;  
+		return SR;
+	>>
+
+\>\>=
+	<<
+		;  
+		return SR_ASSIGN;
+	>>
+
+\>\>\>
+	<<
+		;  
+		return BSR;
+	>>
+
+\>\>\>=
+	<<
+		;  
+		return BSR_ASSIGN;
+	>>
+
+\>=
+	<<
+		;  
+		return GE;
+	>>
+
+\>
+	<<
+		;  
+		return GT;
+	>>
+
+\<\<
+	<<
+		;  
+		return SL;
+	>>
+
+\<\<=
+	<<
+		;  
+		return SL_ASSIGN;
+	>>
+
+\<=
+	<<
+		;  
+		return LE;
+	>>
+
+\<
+	<<
+		;  
+		return LESSTHAN;
+	>>
+
+\^
+	<<
+		;  
+		return BXOR;
+	>>
+
+\^=
+	<<
+		;  
+		return BXOR_ASSIGN;
+	>>
+
+\|
+	<<
+		;   
+		return BOR;
+	>>
+
+\|=
+	<<
+		;   
+		return BOR_ASSIGN;
+	>>
+
+\|\|
+	<<
+		IncrementCount(tcMCCABES_VG);   
+		return LOR;
+	>>
+
+&
+	<<
+		;   
+		return BAND;
+	>>
+
+&=
+	<<
+		;  
+		return BAND_ASSIGN;
+	>>
+
+&&
+	<<
+		IncrementCount(tcMCCABES_VG);  
+		return LAND;
+	>>
+
+;
+	<<
+		;  
+		return SEMI;
+	>>
+
+[\ \t]
+	<<
+		skip();   
+		return WS;
+	>>
+
+\r\n
+	<<
+		endOfLine(*this);   
+		return DOS_NL;
+	>>
+
+\r
+	<<
+		endOfLine(*this);   
+		return MAC_NL;
+	>>
+
+\n
+	<<
+		endOfLine(*this);   
+		return UNIX_NL;
+	>>
+
+//
+	<<
+		mode(COMMENT_LINE); skip();   
+		return COMLINE;
+	>>
+
+/\*
+	<<
+		mode(COMMENT_MULTI); skip();   
+		return COMMULTI;
+	>>
+
+\"
+	<<
+		mode(CONST_STRING); skip();   
+		return STRINGSTART;
+	>>
+
+\'
+	<<
+		mode(CONST_CHAR); skip();   
+		return CHARSTART;
+	>>
+
+abstract
+	<<
+		;  
+		return ABSTRACT;
+	>>
+
+boolean
+	<<
+		;  
+		return KW_BOOLEAN;
+	>>
+
+break
+	<<
+		IncrementCount(tcMCCABES_VG);  
+		return BREAK;
+	>>
+
+byte
+	<<
+		;  
+		return KW_BYTE;
+	>>
+
+catch
+	<<
+		/* IncrementCount(tcMCCABES_VG) ? */ ;  
+		return CATCH;
+	>>
+
+default
+	<<
+		;  
+		return DEFAULT;
+	>>
+
+char
+	<<
+		;  
+		return KW_CHAR;
+	>>
+
+class
+	<<
+		;  
+		return CLASS;
+	>>
+
+const
+	<<
+		;  
+		return KW_CONST;
+	>>
+
+continue
+	<<
+		IncrementCount(tcMCCABES_VG);   
+		return CONTINUE;
+	>>
+
+do
+	<<
+		;  
+		return DO;
+	>>
+
+double
+	<<
+		;  
+		return KW_DOUBLE;
+	>>
+
+else
+	<<
+		;  
+		return ELSE;
+	>>
+
+extends
+	<<
+		;  
+		return EXTENDS;
+	>>
+
+false
+	<<
+		;  
+		return BFALSE;
+	>>
+
+final
+	<<
+		;  
+		return FINAL;
+	>>
+
+finally
+	<<
+		;  
+		return FINALLY;
+	>>
+
+float
+	<<
+		;  
+		return KW_FLOAT;
+	>>
+
+for
+	<<
+		IncrementCount(tcMCCABES_VG);   
+		return FOR;
+	>>
+
+if
+	<<
+		IncrementCount(tcMCCABES_VG);   
+		return IF;
+	>>
+
+implements
+	<<
+		;  
+		return IMPLEMENTS;
+	>>
+
+import
+	<<
+		;  
+		return IMPORT;
+	>>
+
+instanceof
+	<<
+		;  
+		return INSTANCEOF;
+	>>
+
+int
+	<<
+		;  
+		return KW_INT;
+	>>
+
+interface
+	<<
+		;  
+		return INTERFACE;
+	>>
+
+long
+	<<
+		;  
+		return KW_LONG;
+	>>
+
+native
+	<<
+		;  
+		return NATIVE;
+	>>
+
+new
+	<<
+		;  
+		return NEW;
+	>>
+
+null
+	<<
+		;  
+		return PNULL;
+	>>
+
+package
+	<<
+		;  
+		return PACKAGE;
+	>>
+
+private
+	<<
+		;  
+		return PRIVATE;
+	>>
+
+protected
+	<<
+		;  
+		return PROTECTED;
+	>>
+
+public
+	<<
+		;  
+		return PUBLIC;
+	>>
+
+return
+	<<
+		;  
+		return RETURN;
+	>>
+
+short
+	<<
+		;  
+		return KW_SHORT;
+	>>
+
+shutup
+	<<
+		;  
+		return SHUTUP;
+	>>
+
+static
+	<<
+		;  
+		return STATIC;
+	>>
+
+super
+	<<
+		;  
+		return SUPER;
+	>>
+
+switch
+	<<
+		IncrementCount(tcMCCABES_VG);   
+		return SWITCH;
+	>>
+
+synchronized
+	<<
+		;  
+		return SYNCHRONIZED;
+	>>
+
+things
+	<<
+		;  
+		return THINGS;
+	>>
+
+this
+	<<
+		;  
+		return KW_THIS;
+	>>
+
+threadsafe
+	<<
+		;  
+		return THREADSAFE;
+	>>
+
+throw
+	<<
+		;  
+		return THROW;
+	>>
+
+throws
+	<<
+		;  
+		return THROWS;
+	>>
+
+transient
+	<<
+		;  
+		return TRANSIENT;
+	>>
+
+true
+	<<
+		;  
+		return BTRUE;
+	>>
+
+try
+	<<
+		;  
+		return TRY;
+	>>
+
+void
+	<<
+		;  
+		return KW_VOID;
+	>>
+
+volatile
+	<<
+		;  
+		return VOLATILE;
+	>>
+
+while
+	<<
+		IncrementCount(tcMCCABES_VG);   
+		return WHILE;
+	>>
+
+case
+	<<
+		IncrementCount(tcMCCABES_VG);   
+		return CASE;
+	>>
+
+[a-zA-Z_$]([a-zA-Z_$0-9])*
+	<<
+		;  
+		return IDENT;
+	>>
+
+([0-9])*\.([0-9])+{[eE]{[\+\-]}([0-9])+}{[fFdD]}
+	<<
+		;  
+		return NUM_INT1;
+	>>
+
+0([0-7])*{[lL]}
+	<<
+		;  
+		return NUM_INT2;
+	>>
+
+0[xX]([0-9a-fA-F])*{[lL]}
+	<<
+		;  
+		return NUM_INT3;
+	>>
+
+[1-9]([0-9])*{[lL]}
+	<<
+		;  
+		return NUM_INT4;
+	>>
+
+([0-9])+{[eE]{[\+\-]}([0-9])+}{[fFdD]}
+	<<
+		;  
+		return NUM_INT1A;
+	>>
+
+([0-9])+\.{[eE]{[\+\-]}([0-9])+}{[fFdD]}
+	<<
+		;  
+		return NUM_INT1B;
+	>>
+
+
+%%COMMENT_LINE
+
+@
+	<<
+		return Eof;
+	>>
+
+\r\n
+	<<
+		endOfCommentLine(*this); mode(START);   
+		return DOS_COMLINE_END;
+	>>
+
+\r
+	<<
+		endOfCommentLine(*this); mode(START);   
+		return MAC_COMLINE_END;
+	>>
+
+\n
+	<<
+		endOfCommentLine(*this); mode(START);   
+		return UNIX_COMLINE_END;
+	>>
+
+~[\n]
+	<<
+		skip();   
+		return COMLINE_ANYTHING;
+	>>
+
+
+%%COMMENT_MULTI
+
+@
+	<<
+		return Eof;
+	>>
+
+\*/
+	<<
+		
+		IncrementCount(tcCOMLINES); 
+		mode(START); 
+		skip(); 
+		return COMMULTI_END;
+	>>
+
+\r\n
+	<<
+		
+		endOfCommentLine(*this);
+		return DOS_COMMULTI_EOL;
+	>>
+
+\r
+	<<
+		
+		endOfCommentLine(*this);
+		return MAC_COMMULTI_EOL;
+	>>
+
+\n
+	<<
+		
+		endOfCommentLine(*this);
+		return UNIX_COMMULTI_EOL;
+	>>
+
+~[\n]
+	<<
+		skip();   
+		return COMMULTI_ANYTHING;
+	>>
+
+
+%%CONST_STRING
+
+@
+	<<
+		return Eof;
+	>>
+
+\"
+	<<
+		mode(START);   
+		return STRINGCONST;
+	>>
+
+\\\n
+	<<
+		endOfLine(*this);   
+		return LYNNS_FIX;
+	>>
+
+\\\"
+	<<
+		skip();   
+		return ESCAPED_DQUOTE;
+	>>
+
+\\~[\"]
+	<<
+		skip();   
+		return ESCAPED_OTHER;
+	>>
+
+~[\"]
+	<<
+		skip();   
+		return S_ANYTHING;
+	>>
+
+
+%%CONST_CHAR
+
+@
+	<<
+		return Eof;
+	>>
+
+'
+	<<
+		replstr("'.'"); mode(START);   
+		return CHARCONST;
+	>>
+
+~[']
+	<<
+		skip();   
+		return CH_ANYTHING;
+	>>
+
+%%
