@@ -20,5 +20,5 @@ test :
 	cd test ; make -f posix.mak
 
 install : 
-	cd install ; su root -c "make -f install.mak" 
+	cd install ; sudo make -f install.mak 
 

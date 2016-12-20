@@ -39,9 +39,9 @@ all : install_cccc report_success
 endif
 
 install_cccc :
-	-$(MKDIR) $(INSTDIR)
-	-$(RM) $(INSTDIR)/$(INSTBIN1)
-	$(CP) ../cccc/$(INSTBIN1) $(INSTDIR)
+	-sudo $(MKDIR) $(INSTDIR)
+	-sudo $(RM) $(INSTDIR)/$(INSTBIN1)
+	sudo $(CP) ../cccc/$(INSTBIN1) $(INSTDIR)
 
 install_addin :
 	-$(RM) $(INSTDIR)/$(INSTBIN2)
