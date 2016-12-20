@@ -6,7 +6,7 @@
 # I would like to make it less inconsistent, but the first stage is to make 
 # it work...
 
-.PHONY : pccts cccc test install
+.PHONY : pccts cccc test clean install 
 
 all : pccts cccc test install
 
@@ -18,6 +18,9 @@ cccc :
 
 test :
 	cd test ; make -f posix.mak
+
+clean :
+	cd cccc ; rm *.o ; rm cccc
 
 install : 
 	cd install ; sudo make -f install.mak 
