@@ -26,7 +26,7 @@ PATHSEP=/
 
 CCC=g++
 LD=g++
-CFLAGS=-c -I../pccts/h -O3 -Wall -std=c++14 $(CFLAGS_DEBUG) -x c++ 
+CFLAGS=-c -I../pccts/h -O3 -Wall -std=c++11 $(CFLAGS_DEBUG) -x c++ 
 C_OFLAG=-o
 LDFLAGS=$(LDFLAGS_DEBUG)
 LD_OFLAG=-o
