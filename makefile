@@ -20,7 +20,7 @@ test :
 	cd test ; make -f posix.mak
 
 clean :
-	cd cccc ; rm *.o ; rm cccc
+	cd cccc ; rm *.o ; rm cccc ; cd .. ; cd pccts ; make clean
 
 install : 
 	cd install ; sudo make -f install.mak 
