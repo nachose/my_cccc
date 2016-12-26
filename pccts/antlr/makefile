@@ -169,7 +169,7 @@ ANTLR=../bin/antlr
 DLG=../bin/dlg
 OBJ_EXT=o
 OUT_OBJ = -o
-CFLAGS= -O -I. -I$(SET) -I$(PCCTS_H) -DUSER_ZZSYN $(COTHER)
+CFLAGS= -O -I. -I$(SET) -I$(PCCTS_H) -DUSER_ZZSYN $(COTHER) -fPIC
 #
 # SGI Users, use this CFLAGS
 #
