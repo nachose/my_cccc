@@ -248,7 +248,7 @@ char *eclass;
 	unsigned deg=0;
 	set a;
 	require(eclass!=NULL, "doEclass: NULL eset");
-	
+
 	p = (ECnode *) eclass;
 	lexmode(p->lexclass);	/* switch to lexclass where errclass is defined */
 	p->eset = empty;
@@ -546,12 +546,12 @@ char *name;
 	else
 		fprintf(DefFile, "extern SetWordType zzerr%d[];\n", esetnum);
 	if ( name!=NULL ) {
-		fprintf(ErrFile, "SetWordType %s_set[%d] = {",
+		fprintf(ErrFile, "SetWordType %s_set[%ld] = {",
 				name,
 				NumWords(TokenNum-1)*sizeof(unsigned));
 	}
 	else {
-		fprintf(ErrFile, "SetWordType zzerr%d[%d] = {",
+		fprintf(ErrFile, "SetWordType zzerr%d[%ld] = {",
 				esetnum,
 				NumWords(TokenNum-1)*sizeof(unsigned));
 	}
@@ -611,19 +611,19 @@ char *name;
 	esetnum++;
 
 	if ( name!=NULL ) {
-		fprintf(Parser_h, "\tstatic SetWordType %s_set[%d];\n", name,
+		fprintf(Parser_h, "\tstatic SetWordType %s_set[%ld];\n", name,
 				NumWords(TokenNum-1)*sizeof(unsigned));
-		fprintf(Parser_c, "SetWordType %s::%s_set[%d] = {",
+		fprintf(Parser_c, "SetWordType %s::%s_set[%ld] = {",
 				CurrentClassName,
 				name,
 				NumWords(TokenNum-1)*sizeof(unsigned));
 	}
 	else {
-		fprintf(Parser_c, "SetWordType %s::err%d[%d] = {",
+		fprintf(Parser_c, "SetWordType %s::err%d[%ld] = {",
 				CurrentClassName,
 				esetnum,
 				NumWords(TokenNum-1)*sizeof(unsigned));
-		fprintf(Parser_h, "\tstatic SetWordType err%d[%d];\n", esetnum,
+		fprintf(Parser_h, "\tstatic SetWordType err%d[%ld];\n", esetnum,
 				NumWords(TokenNum-1)*sizeof(unsigned));
 	}
 
@@ -680,7 +680,7 @@ GenParser_c_Hdr()
 	fprintf(Parser_c, " * with AHPCRC, University of Minnesota\n");
 	fprintf(Parser_c, " * ANTLR Version %s\n", Version);
 	fprintf(Parser_c, " */\n\n");
-	
+
   if ( FirstAction != NULL ) dumpAction(FirstAction,Parser_c, 0, -1, 0, 1);    /* MR11 MR15b */
 
 	fprintf(Parser_c, "#define ANTLR_VERSION	%s\n", VersionDef);
@@ -749,7 +749,7 @@ GenParser_c_Hdr()
 
 	/* Build constructors */
 	fprintf(Parser_c, "\n%s::", CurrentClassName);
-	fprintf(Parser_c,	"%s(ANTLRTokenBuffer *input) : ANTLRParser(input,%d,%d,%d,%d)\n",
+	fprintf(Parser_c,	"%s(ANTLRTokenBuffer *input) : ANTLRParser(input,%d,%d,%d,%ld)\n",
 						CurrentClassName,
 						OutputLL_k,
 						FoundGuessBlk,
@@ -809,7 +809,7 @@ GenParser_h_Hdr()
 	fprintf(Parser_h, "#include \"%s\"\n\n", APARSER_H);
 
 	if ( HdrAction != NULL ) dumpAction( HdrAction, Parser_h, 0, -1, 0, 1);
-	
+
 /* MR10 */    if (ClassDeclStuff == NULL) {
 /* MR10 */  	fprintf(Parser_h, "class %s : public ANTLRParser {\n", CurrentClassName);
 /* MR10 */    } else {
@@ -849,7 +849,7 @@ GenErrHdr( )
 	fprintf(ErrFile, " */\n\n");
 
   if ( FirstAction != NULL ) dumpAction( FirstAction, ErrFile, 0, -1, 0, 1);         /* MR11 MR15b */
-	
+
   fprintf(ErrFile, "#define ANTLR_VERSION	%s\n", VersionDef);
 
   fprintf(ErrFile, "#include \"pcctscfg.h\"\n");
@@ -877,11 +877,11 @@ GenErrHdr( )
 #ifdef DUM
 	if ( LexGen ) fprintf(ErrFile, "#define zzEOF_TOKEN %d\n", (TokenInd!=NULL?TokenInd[EofToken]:EofToken));
 #endif
-	fprintf(ErrFile, "#define zzSET_SIZE %d\n", NumWords(TokenNum-1)*sizeof(unsigned));
+	fprintf(ErrFile, "#define zzSET_SIZE %ld\n", NumWords(TokenNum-1)*sizeof(unsigned));
 	if ( DemandLookahead ) fprintf(ErrFile, "#define DEMAND_LOOK\n");
 	fprintf(ErrFile, "#include \"antlr.h\"\n");
 	if ( GenAST ) fprintf(ErrFile, "#include \"ast.h\"\n");
-			
+
     if ( UserDefdTokens ) fprintf(ErrFile, "#include %s\n", UserTokenDefsFile);
 	/* still need this one as it has the func prototypes */
 	fprintf(ErrFile, "#include \"%s\"\n", DefFileName);
