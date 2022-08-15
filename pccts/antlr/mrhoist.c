@@ -2202,7 +2202,7 @@ int MR_offsetFromRule(n)
 #define ruleNameMax 50
 
 static char ruleNameStatic1[ruleNameMax];
-static char ruleNameStatic2[ruleNameMax+10];
+static char ruleNameStatic2[ruleNameMax+14];
 
 #ifdef __USE_PROTOS
 char * MR_ruleNamePlusOffset(Node *n)

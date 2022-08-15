@@ -2,37 +2,37 @@
 
 	The following is a general-purpose set library originally developed
 	by Hank Dietz and enhanced by Terence Parr to allow dynamic sets.
-	
+
 	Sets are now structs containing the #words in the set and
 	a pointer to the actual set words.
-	
+
 	Generally, sets need not be explicitly allocated.  They are
 	created/extended/shrunk when appropriate (e.g. in set_of()).
 	HOWEVER, sets need to be destroyed (free()ed) when they go out of scope
 	or are otherwise no longer needed.  A routine is provided to
 	free a set.
-	
+
 	Sets can be explicitly created with set_new(s, max_elem).
-	
+
 	Sets can be declared to have minimum size to reduce realloc traffic.
 	Default minimum size = 1.
-	
+
 	Sets can be explicitly initialized to have no elements (set.n == 0)
 	by using the 'empty' initializer:
-	
+
 	Examples:
 		set a = empty;	-- set_deg(a) == 0
-		
+
 		return( empty );
-	
+
 	Example set creation and destruction:
-	
+
 	set
 	set_of2(e,g)
 	unsigned e,g;
 	{
 		set a,b,c;
-		
+
 		b = set_of(e);		-- Creates space for b and sticks in e
 		set_new(c, g);		-- set_new(); set_orel() ==> set_of()
 		set_orel(g, &c);
@@ -46,7 +46,7 @@
 	}
 
 	1987 by Hank Dietz
-	
+
 	Modified by:
 		Terence Parr
 		Purdue University
@@ -169,7 +169,7 @@ set c;
 	q = c.setword;
 	p = b.setword;
 	endp = &(b.setword[n]);
-	while ( p < endp ) *r++ = *p++ | *q++;	
+	while ( p < endp ) *r++ = *p++ | *q++;
 
 	/* Copy rest of bigger set into result */
 	p = &(big->setword[n]);
@@ -205,7 +205,7 @@ set c;
 	q = c.setword;
 	p = b.setword;
 	endp = &(b.setword[n]);
-	while ( p < endp ) *r++ = *p++ & *q++;	
+	while ( p < endp ) *r++ = *p++ & *q++;
 
 	return(t);
 }
@@ -237,7 +237,7 @@ set c;
 	q = c.setword;
 	p = b.setword;
 	endp = &(b.setword[n]);
-	while ( p < endp ) *r++ = *p++ & (~ *q++);	
+	while ( p < endp ) *r++ = *p++ & (~ *q++);
 
 	/* Copy rest of b into result if size(b) > c */
 	if ( b.n > n )
@@ -255,7 +255,7 @@ set
 set_of( unsigned b )
 #else
 set_of( b )
-unsigned b;
+unsigned long b;
 #endif
 {
 	/* Fast singleton set constructor operation */
@@ -288,7 +288,7 @@ unsigned int n;
 	register unsigned *p;
 	register unsigned *endp;
 	unsigned int size;
-	
+
 	CHK((*a));
     if ( a->n == 0 )
     {
@@ -344,7 +344,7 @@ set a;
 	if ( a.n == 0 ) return( empty );
 	set_ext(&t, a.n);
 	r = t.setword;
-	
+
 	do {
 		*r++ = (~ *p++);
 	} while ( p < endp );
@@ -469,7 +469,7 @@ set a;
 	/* nil is an element of every set */
 	if (b == nil) return(1);
 	if ( a.n == 0 || NumWords(b) > a.n ) return(0);
-	
+
 	/* Otherwise, we have to check */
 	return( a.setword[DIVWORD(b)] & bitmask[MODWORD(b)] );
 }
@@ -489,7 +489,7 @@ set a;
 	CHK(a);
 	if ( a.n == 0 ) return(1);
 	endp = &(a.setword[a.n]);
-	
+
 	/* The set is not empty if any word used to store
 	   the set is non-zero.  This means one must be a
 	   bit careful about doing things like negation.
@@ -497,7 +497,7 @@ set a;
 	do {
 		if (*p) return(0);
 	} while (++p < endp);
-	
+
 	return(1);
 }
 
@@ -553,7 +553,7 @@ register char *s;
 	static set a;
 	register unsigned *p, *endp;
 
-	set_new(a, strlen(s));
+	set_new(a, (unsigned long)strlen(s));
 	p = a.setword;
 	endp = &(a.setword[a.n]);
 	do {
@@ -677,7 +677,7 @@ set a;
 	/* Does not effect size of set */
 	register unsigned *p = a.setword;
 	register unsigned *endp;
-	
+
 	CHK(a);
 	if ( a.n == 0 ) return;
 	endp = &(a.setword[a.n]);
@@ -698,7 +698,7 @@ set a;
 	register unsigned *p,
 					  *q    = a.setword,
 					  *endq; /* MR20 */
-	
+
 	CHK(a);
 	b = empty;
 	if ( a.n == 0 ) return( empty );
@@ -708,7 +708,7 @@ set a;
 	do {
 		*p++ = *q++;
 	} while ( q < endq );
-	
+
 	return(b);
 }
 
@@ -778,7 +778,7 @@ set a;
 {
 	unsigned *q;
 	int max_deg;
-	
+
 	CHK(a);
 	max_deg = WORDSIZE*a.n;
 	/* assume a.n!=0 & no elements is rare, but still ok */

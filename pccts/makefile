@@ -41,9 +41,9 @@ pccts:
 #
 	if [ ! -d $(BINDIR) ] ; then mkdir $(BINDIR) ; fi
 	echo Making executables...
-	(cd antlr; make -s)
+	(cd antlr; make -j 3 -s)
 	echo antlr executable now in $(BINDIR)
-	(cd dlg; make -s)
+	(cd dlg; make -j3 -s)
 	echo dlg executable now in $(BINDIR)
 	echo
 	echo "       PCCTS 1.33MR20 installation complete"

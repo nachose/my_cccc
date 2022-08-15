@@ -11,11 +11,11 @@ cd ..
 
 cd cccc
 make -f posixgcc.mak clean
-make -f posixgcc.mak 
+make -j 3 -f posixgcc.mak 
 cd ..
 
 cd test
-make -f posix.mak 
+make -j 3 -f posix.mak 
 cd ..
 
 

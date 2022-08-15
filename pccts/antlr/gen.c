@@ -159,7 +159,7 @@ static void OutLineInfo();                                          /* MR14 */
 #define gen6(s,a,b,c,d,e,f)	{tab(); fprintf(output, s,a,b,c,d,e,f);}
 #define gen7(s,a,b,c,d,e,f,g)	{tab(); fprintf(output, s,a,b,c,d,e,f,g);}
 
-#define _gen(s)			{fprintf(output, s);}
+#define _gen(s)			{fprintf(output, "%s", s);}
 #define _gen1(s,a)		{fprintf(output, s,a);}
 #define _gen2(s,a,b)	{fprintf(output, s,a,b);}
 #define _gen3(s,a,b,c)	{fprintf(output, s,a,b,c);}
@@ -172,9 +172,9 @@ static void OutLineInfo();                                          /* MR14 */
 /* MR11 a convenient place to set a break point */
 
 #ifdef __USE_PROTOS
-void MR_break(void) 
+void MR_break(void)
 #else
-void MR_break() 
+void MR_break()
 #endif
 {
   return;
@@ -1197,7 +1197,7 @@ int k;
 #endif
 {
 	require(t!=NULL, "genExprTreeOriginal: NULL tree");
-	
+
 	if ( t->token == ALT )
 	{
 		_gen("("); genExprTreeOriginal(t->down, k); _gen(")");
@@ -1368,13 +1368,13 @@ static void genExprTree(tree,k)
 
 #if 0
     /* MR20 THM This was probably an error.
-            The routine should probably reference that static 
+            The routine should probably reference that static
             "across" and this declaration hides it.
     */
 
     int     across;
 #endif
-  
+
     require (tree != NULL,"genExprTree: tree is NULL");
     require (k > 0,"genExprTree: k <= 0");
 
@@ -1555,7 +1555,7 @@ int *need_right_curly;
 
 	*need_right_curly=0;
 	if ( q->p2 == NULL )	/* only one alternative?  Then don't need if */
-	{	
+	{
 		if (first_item_is_guess_block((Junction *)q->p1)!=NULL )
 		{
             if (jtype != aLoopBlk && jtype != aOptBlk && jtype != aPlusBlk) {
@@ -1573,7 +1573,7 @@ int *need_right_curly;
 	for (alt=q; alt != NULL; alt= (Junction *) alt->p2 )
 	{
 		if ( alt->p2 == NULL )					/* chk for empty alt */
-		{	
+		{
 			Node *p = alt->p1;
 			if ( p->ntype == nJunction )
 			{
@@ -1786,9 +1786,9 @@ char *s;
   };
   goto stringizeExit;
 stringizeStop:
-  *p++='.';        	
-  *p++='.';        	
-  *p++='.';        	
+  *p++='.';
+  *p++='.';
+  *p++='.';
 stringizeExit:
   *p=0;
   return stringizeBuf;
@@ -1824,7 +1824,7 @@ ActionNode *p;
 {
 	require(p!=NULL,			"genAction: invalid node and/or rule");
 	require(p->ntype==nAction,	"genAction: not action");
-	
+
 	if ( !p->done )  /* MR10 */ /* MR11 */
 	{
 		if ( p->is_predicate)
@@ -1906,7 +1906,7 @@ RuleRefNode *p;
 
 	require(p!=NULL,			"genRuleRef: invalid node and/or rule");
 	require(p->ntype==nRuleRef, "genRuleRef: not rule reference");
-	
+
 	if ( p->altstart!=NULL && p->altstart->exception_label!=NULL )
 		handler_id = p->altstart->exception_label;
 
@@ -2149,7 +2149,7 @@ TokNode *p;
 	char *set_name;
 	require(p!=NULL,			"genToken: invalid node and/or rule");
 	require(p->ntype==nToken,	"genToken: not token");
-	
+
 	if ( p->altstart!=NULL && p->altstart->exception_label!=NULL )
 		handler_id = p->altstart->exception_label;
 
@@ -3172,7 +3172,7 @@ do {    /* MR10     Change recursion into iteration         */
   FillSet( follow );
 	set_free( follow );
 
-  /* MR20 G. Hobbelt 
+  /* MR20 G. Hobbelt
      Isn't it so that "fail:" is ONLY referenced when:
 
       	 !FoundException || FoundGuessBlk ?
@@ -3180,7 +3180,7 @@ do {    /* MR10     Change recursion into iteration         */
      Therefore add the "if" around this piece of code generation...
 
      Should guessing mode also use _handler label instead of "fail"
-     when exception handling is active? gen can automatically put 
+     when exception handling is active? gen can automatically put
      "if (guessing)" there so as to skip all kinds of user code.
 
    */
@@ -3493,7 +3493,7 @@ int file;
 	}
 #endif
 	/* ###WARNING: This will have to change when SetWordSize changes */
-	if ( !GenCC ) _gen1("#define zzSET_SIZE %d\n", NumWords(TokenNum-1)*sizeof(unsigned));
+	if ( !GenCC ) _gen1("#define zzSET_SIZE %ld\n", NumWords(TokenNum-1)*sizeof(unsigned));
     if (TraceGen) {
       _gen("#ifndef zzTRACE_RULES\n");  /* MR20 */
       _gen("#define zzTRACE_RULES\n");  /* MR20 */
@@ -3712,7 +3712,7 @@ char * gate;                                    /* MR10 */
 	if ( LexGen ) fprintf(f, "#define zzEOF_TOKEN %d\n", (TokenInd!=NULL?TokenInd[EofToken]:EofToken));
 #endif
 	/* ###WARNING: This will have to change when SetWordSize changes */
-	fprintf(f, "#define zzSET_SIZE %d\n", NumWords(TokenNum-1)*sizeof(unsigned));
+	fprintf(f, "#define zzSET_SIZE %ld\n", NumWords(TokenNum-1)*sizeof(unsigned));
     if (TraceGen) {
       fprintf(f,"#ifndef zzTRACE_RULES\n");  /* MR20 */
       fprintf(f,"#define zzTRACE_RULES\n");  /* MR20 */
@@ -3859,7 +3859,7 @@ Node *q;
 	Junction *j;
 	require(q!=NULL, "findImmedAction: NULL node");
 	require(q->ntype>=1 && q->ntype<=NumNodeTypes, "findImmedAction: invalid node");
-	
+
 	while ( q->ntype == nJunction )
 	{
 		j = (Junction *)q;
@@ -3881,14 +3881,14 @@ char *ret_def;
 #endif
 {
 	char *q = ret_def;
-	
+
 	tab();
 	while ( *retval != '\0' )
 	{
 		while ( isspace((*retval)) ) retval++;
 		while ( *retval!=',' && *retval!='\0' ) fputc(*retval++, output);
 		fprintf(output, " = _trv.");
-		
+
 		DumpNextNameInDef(&q, output);
 		fputc(';', output); fputc(' ', output);
 		if ( *retval == ',' ) retval++;
@@ -4016,7 +4016,7 @@ int max_k;
 
       if ( GenCC ) {_gen1(",err%d", DefErrSet( &f, 1, NULL ));}
 			else _gen1(",zzerr%d", DefErrSet( &f, 1, NULL ));
-			
+
 			set_free(f);
 		}
 	}
